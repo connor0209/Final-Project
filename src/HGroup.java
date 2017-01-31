@@ -35,6 +35,14 @@ public class HGroup {
 		else if(groupSize==4){
 			group = Integer.toString(one.getPlayerNo())+" "+Integer.toString(two.getPlayerNo())+" "+Integer.toString(three.getPlayerNo())+" "+Integer.toString(four.getPlayerNo());
 		}
+		else if(groupSize==5){
+			if(getPlayerFour()!=null){
+				group = Integer.toString(one.getPlayerNo())+" "+Integer.toString(two.getPlayerNo())+" "+Integer.toString(three.getPlayerNo())+" "+Integer.toString(four.getPlayerNo());
+			}
+			else{
+				group = Integer.toString(one.getPlayerNo())+" "+Integer.toString(two.getPlayerNo())+" "+Integer.toString(three.getPlayerNo());
+			}
+		}
 		
 		return group;
 	}

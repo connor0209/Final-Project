@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class HeuristicSearch {
@@ -12,7 +13,7 @@ public class HeuristicSearch {
 
 	public static void main(String args[]) {
 		HeuristicSearch bss = new HeuristicSearch();
-		bss.search(16, 5, 4, 4);
+		bss.search(7, 4, 5, 2);
 	}
 
 	public void search(int numPlayer,int rounds, int groupSize, int numGroups) {
@@ -34,6 +35,7 @@ public class HeuristicSearch {
 		}
 		printGroups(groupSize);		
 		System.out.println("FINAL GROUP SCORE IS: "+getFinalScore());
+		printArrayResults();
 		
 	}
 	
@@ -56,6 +58,9 @@ public class HeuristicSearch {
 				}
 				if(groupSize==4){
 					sizeFourGroups(numGroups);
+				}
+				if(groupSize==5){
+					mixedSizeGroups(numGroups);
 				}
 				if(getCurrentScore()>roundScore){
 					temp = new ArrayList<HGroup>(groups);
@@ -134,6 +139,53 @@ public class HeuristicSearch {
 			addGroupFour(gr.getPlayerOne(), gr.getPlayerTwo(),gr.getPlayerThree(),gr.getPlayerFour());						
 			groups.add(gr);
 		}
+	}
+	
+	public void mixedSizeGroups(int numGroups){
+		int fourballs = numPlayers/4;
+		int threeballs = numGroups-fourballs;
+		for(int g = 0; g<numGroups; g++){
+			int test = 0;
+			int bestScore = Integer.MIN_VALUE;
+			HGroup gr = new HGroup(null,null,null,null);
+			if(g<fourballs){
+				while(test<50
+						
+						){//200
+					HPlayer p1 = getPlayerOne(notGrouped);
+					HPlayer p2 = getPlayerTwo(notGrouped,p1);
+					HPlayer p3 = getPlayerThree(notGrouped,p1,p2);
+					HPlayer p4 = getPlayerFour(notGrouped,p1,p2,p3);
+					HGroup temp = new HGroup(p1,p2,p3,p4);
+					if(temp.getGroupScore(4)>bestScore){
+						bestScore=temp.getGroupScore(4);
+						gr = new HGroup(p1,p2,p3,p4);
+					}
+					removeGroupFour(p1,p2,p3,p4);
+					test++;
+				}
+				addGroupFour(gr.getPlayerOne(), gr.getPlayerTwo(),gr.getPlayerThree(),gr.getPlayerFour());						
+				groups.add(gr);
+			}
+		else{
+			while(test<200){//200
+					HPlayer p1 = getPlayerOne(notGrouped);
+					HPlayer p2 = getPlayerTwo(notGrouped,p1);
+					HPlayer p3 = getPlayerThree(notGrouped,p1,p2);
+					HGroup temp = new HGroup(p1,p2,p3,null);
+					if(temp.getGroupScore(3)>bestScore){
+						bestScore=temp.getGroupScore(3);
+						gr = new HGroup(p1,p2,p3,null);
+					}
+					removeGroupThree(p1,p2,p3);
+					test++;
+				}
+				addGroupThree(gr.getPlayerOne(), gr.getPlayerTwo(),gr.getPlayerThree());						
+				groups.add(gr);
+			}
+		
+		}
+		
 	}
 	
 	public HPlayer getPlayerOne(ArrayList<Integer> notGrouped){
@@ -261,7 +313,7 @@ public class HeuristicSearch {
 			for (HGroup g : temp) {
 				System.out.println(g.returnGroup(groupSize));
 			}
-			System.out.println("--------------------------------------------------");
+			System.out.println("-----");
 		}
 	}
 	
@@ -383,4 +435,25 @@ public class HeuristicSearch {
 			}
 		}
 	}
+	
+	public void printArrayResults(){
+		int[][] results = new int[numPlayers][numPlayers];
+		 for (int r=0; r<results.length; r++) {
+		     for (int c=0; c<results[r].length; c++) {
+		    	 results[r][c]= Collections.frequency(players.get(r).getPlayedPlayers(),Integer.toString(c+1));
+		     }
+		 }
+		 for(int[] row : results) {
+	            printRow(row);
+	        }
+	}
+	
+	 public static void printRow(int[] row) {
+	        for (int i : row) {
+	        	
+	            System.out.print( +i);
+	            System.out.print("\t");
+	        }
+	        System.out.println();
+	    }
 }
